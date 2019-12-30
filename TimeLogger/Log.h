@@ -3,6 +3,7 @@
  * - Manages file I/O
  * - Gets time
  */
+#pragma once
 
 #include <string>
 #include <fstream>
@@ -12,9 +13,13 @@ using namespace std;
 class Log
 {
 private:
+	string _file_name;
 	ofstream _log_file;
 	int _unflushed_log_count = 0;
 
+	/**
+	 * Gets current time as a string
+	 */
 	static string GetTimeString();
 
 public:
@@ -39,5 +44,16 @@ public:
 	 */
 	void Flush();
 
+	/**
+	 * Gets the number of logs that have not been
+	 * flushed to disk. These logs are sitting in the
+	 * ofstream buffer
+	 */
 	int GetBufferedLogCount();
+
+	/**
+	 * Runs through the start/end session lines in the file
+	 * to calculate total time spent using the logger.
+	 */
+	int CalculateTimeLogged();
 };

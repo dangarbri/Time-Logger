@@ -8,6 +8,10 @@ if (CMAKE_BUILD_TYPE MATCHES Debug)
 	add_definitions (-DDEBUG)
 endif ()
 
-add_executable (TimeLogger "TimeLogger.cpp" "TimeLogger.h" "Log.cpp" "Log.h")
+add_executable (TimeLogger "TimeLogger.cpp" 
+		                   "TimeLogger.h" 
+						   "Log.cpp" 
+						   "Log.h" 
+						   "../Common/constants.cpp")
 
 # TODO: Add tests and install targets if needed.

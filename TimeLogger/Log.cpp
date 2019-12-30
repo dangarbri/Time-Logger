@@ -1,10 +1,7 @@
 #include "Log.h"
+#include "constants.h"
 #include <iostream>
 #include <ctime>
-
-const string SESSION_MARKER = "----- ";
-const string SESSION_START_MESSAGE = "Session started at ";
-const string SESSION_END_MESSAGE = "Session ended at ";
 
 string Log::GetTimeString()
 {
@@ -18,6 +15,7 @@ string Log::GetTimeString()
 
 Log::Log(string file_name)
 {
+	this->_file_name = file_name;
 	this->_log_file.open(file_name, ofstream::app | ofstream::out);
 	if (this->_log_file.is_open())
 	{
