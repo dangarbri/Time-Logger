@@ -33,7 +33,7 @@ Log::~Log()
 {
 	if (this->_log_file.is_open())
 	{
-#if (CMAKE_BUILD_TYPE == Debug)
+#ifdef DEBUG
 		cout << "Closing log file" << endl;
 #endif
 		this->_log_file << SESSION_MARKER << SESSION_END_MESSAGE << Log::GetTimeString() << endl;

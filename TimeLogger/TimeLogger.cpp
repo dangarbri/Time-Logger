@@ -32,7 +32,7 @@ void print_prompt(bool continuation)
 
 int main()
 {
-#if (CMAKE_BUILD_TYPE == Debug)
+#ifdef DEBUG
 	cout << "Running in debug mode" << endl;
 #endif
 
@@ -55,7 +55,7 @@ int main()
 		}
 		else if (input_line.compare("s") == 0)
 		{
-#if (CMAKE_BUILD_TYPE == Debug)
+#ifdef DEBUG
 			cout << "Saving..." << endl;
 #endif
 
