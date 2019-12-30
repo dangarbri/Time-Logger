@@ -2,6 +2,7 @@
 //
 
 #include "TimeLogger.h"
+#include "Log.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -9,34 +10,40 @@
 
 using namespace std;
 
-time_t write_time(ofstream &output)
+const string LOG_FILE_NAME = "time_log.txt";
+const string PROMPT_MESSAGE = "Enter note: ";
+
+/**
+ * Pretty prompt for user interface
+ */
+void print_prompt(bool continuation)
 {
-	time_t rawtime;
-	struct tm* timeinfo;
-
-	time(&rawtime);
-	timeinfo = localtime(&rawtime);
-	output << asctime(timeinfo);
-
-	return rawtime;
-}
-
-void commit_message(ofstream &log, string message)
-{
-	write_time(log);
-	log << message;
-	log << "\n";
-	log.flush();
+	if (!continuation)
+	{
+		cout << PROMPT_MESSAGE;
+	}
+	else
+	{
+		// If continuing a note, don't print the message again,
+		// just indent so it's clear it's the same note.
+		cout << string(PROMPT_MESSAGE.length(), ' ');
+	}
 }
 
 int main()
 {
-	ofstream log("time_log.txt", ofstream::app);
+#if (CMAKE_BUILD_TYPE == Debug)
+	cout << "Running in debug mode" << endl;
+#endif
+
+	Log logger(LOG_FILE_NAME);
 	string message = "  ";
 	string input_line;
+	bool continuing_note = false;
 	while (1)
 	{
-		cout << "Enter note: ";
+		print_prompt(continuing_note);
+
 		// read input
 		getline(cin, input_line);
 
@@ -44,19 +51,30 @@ int main()
 		if (input_line.compare("q") == 0)
 		{
 			cout << "Exiting" << endl;
-			log.close();
-			exit(0);
+			break;
+		}
+		else if (input_line.compare("s") == 0)
+		{
+#if (CMAKE_BUILD_TYPE == Debug)
+			cout << "Saving..." << endl;
+#endif
+
+			logger.Flush();
+			cout << "Saved to disk" << endl << endl;
 		}
 		else if (input_line.compare("") == 0)
 		{
-			commit_message(log, message);
-			cout << "Log committed." << endl << endl;
-			// reset message
+			logger.Write(message);
+			cout << "Got it. There are " << logger.GetBufferedLogCount() << " logs pending. Enter 's' to flush to disk" << endl;
+
+			// reset message and state
 			message = "  ";
+			continuing_note = false;
 		}
 		else
 		{
 			message += input_line + "\n  ";
+			continuing_note = true;
 		}
 	}
 	return 0;
